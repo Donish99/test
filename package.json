@@ -9,8 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "next": "latest",
+    "pg-promise": "^11.5.4",
     "react": "latest",
-    "react-dom": "latest",
-    "next": "latest"
+    "react-dom": "latest"
   }
 }
